@@ -1,7 +1,9 @@
 package mosaicmaker;
 
+import java.util.ArrayList;
+
 public abstract class ImageFetcher {
 
 	
-	public abstract Block[] getReplacementImages(String URI);
+	public abstract ArrayList<Block> getReplacementImages(String URI);
 }

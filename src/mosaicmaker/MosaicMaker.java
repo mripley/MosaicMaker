@@ -1,5 +1,6 @@
 package mosaicmaker;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -28,5 +29,23 @@ public class MosaicMaker {
 
 	private void makeMosaic(){
 		
+	}
+	
+	public static Color getAverageColor(int[] pixels){
+		
+		int r =0 ,g=0 ,b = 0; 
+		for(int i : pixels){
+			// and out the red channel
+			r += (0x00ff0000 & i) >> 16;
+			// and out the green channel
+			g += (0x0000ff00 & i) >> 8;
+			// and out the blue channel
+			b += (0x000000ff & i);	
+		}
+		
+		r /= pixels.length;
+		g /= pixels.length;
+		b /= pixels.length;
+		return new Color(r,g,b);	
 	}
 }

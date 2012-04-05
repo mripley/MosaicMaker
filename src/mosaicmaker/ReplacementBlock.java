@@ -1,27 +1,27 @@
 package mosaicmaker;
 
-import java.awt.image.BufferedImage;
 
 public class ReplacementBlock extends Block {
 	
-	private BufferedImage img;
+	private int[] img;
 
-	public ReplacementBlock(BufferedImage img, int row, int col) {
+	public ReplacementBlock(int[] pixels, int row, int col) {
 		super(row, col);
-		this.img = img;
+		this.img = pixels;
 	}
 	
-	public ReplacementBlock(BufferedImage img){
+	public ReplacementBlock(int[] pixels){
 		super(0,0);
-		this.img = img;
+		this.img = pixels;
 	}
 	
-	public BufferedImage getImg() {
+	public int[] getImg() {
 		return img;
 	}
 
-	public void setImg(BufferedImage img) {
+	public void setImg(int[] img) {
 		this.img = img;
 	}
+	
 
 }

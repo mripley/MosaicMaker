@@ -6,8 +6,10 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+		if(args.length < 5){
+			System.out.println("Not enough args to MosaicMaker");
+			return;
+		}
 	}
 
 }

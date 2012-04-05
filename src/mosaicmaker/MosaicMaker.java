@@ -29,10 +29,44 @@ public class MosaicMaker {
 	}
 
 	private void makeMosaic(){
+		
 		int xOffset= sourceImage.getWidth()/xBlockNumber;
 		int xLastBlock= sourceImage.getWidth()%xBlockNumber;
 		int yOffset = sourceImage.getHeight()/yBlockNumber;
 		int yLastBlock = sourceImage.getWidth()%yBlockNumber;
+		
+		if (xLastBlock != 0){
+			double a = (double) sourceImage.getWidth()/ (double) xBlockNumber;
+			double b = a - (sourceImage.getWidth()/xBlockNumber + .5);
+			if(b<0){
+				//number of pixels is over for even block size
+				xOffset = (int) Math.floor((double)sourceImage.getWidth()/(double)xBlockNumber);
+				xLastBlock = sourceImage.getWidth() - (xOffset * xBlockNumber);
+				
+			}
+			if(b>0){
+				//number of pixels is under block size
+				xOffset = (int)Math.ceil((double)sourceImage.getWidth()/(double)xBlockNumber);
+				xLastBlock = sourceImage.getWidth() - (xOffset * xBlockNumber);
+			}
+			
+		}
+		if (yLastBlock != 0){
+			double a = (double) sourceImage.getWidth()/ (double) yBlockNumber;
+			double b = a - (sourceImage.getWidth()/yBlockNumber + .5);
+			if(b<0){
+				//number of pixels is over for even block size
+				yOffset = (int) Math.floor((double)sourceImage.getWidth()/(double)yBlockNumber);
+				yLastBlock = sourceImage.getWidth() - (xOffset * yBlockNumber);
+				
+			}
+			if(b>0){
+				//number of pixels is under block size
+				yOffset = (int)Math.ceil((double)sourceImage.getWidth()/(double)yBlockNumber);
+				yLastBlock = sourceImage.getWidth() - (xOffset * yBlockNumber);
+			}
+			
+		}
 		
 		ArrayList<Block> source= new ArrayList<Block>();
 		int[] rgb = new int[xOffset*yOffset];

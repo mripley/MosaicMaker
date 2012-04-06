@@ -1,23 +1,23 @@
 package mosaicmaker;
 
 import java.awt.Color;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-
+import java.lang.Math;
 import javax.imageio.ImageIO;
 
 public class MosaicMaker {
 	
 	private BufferedImage sourceImage;
-	private int xBlockNumber, yBlockNumber;
+	private int xNumBlocks, yNumBlocks;
 	private ImageFetcher fetcher;
 	
-	public MosaicMaker(String sourceImagePath, int xBlockNumber, int yBlockNumber, String replacementPath) throws IOException{
+	public MosaicMaker(String sourceImagePath, String replacementPath) throws IOException{
 		sourceImage = ImageIO.read(new File(sourceImagePath));
-		this.xBlockNumber = xBlockNumber;
-		this.yBlockNumber = yBlockNumber;
+
 		File dir = new File(replacementPath);
 		if(dir.list() == null){
 			this.fetcher = new GoogleImageFetcher();
@@ -28,82 +28,47 @@ public class MosaicMaker {
 		
 	}
 
-	private void makeMosaic(){
-		
-		int xOffset= sourceImage.getWidth()/xBlockNumber;
-		int xLastBlock= sourceImage.getWidth()%xBlockNumber;
-		int yOffset = sourceImage.getHeight()/yBlockNumber;
-		int yLastBlock = sourceImage.getWidth()%yBlockNumber;
-		
-		if (xLastBlock != 0){
-			double a = (double) sourceImage.getWidth()/ (double) xBlockNumber;
-			double b = a - (sourceImage.getWidth()/xBlockNumber + .5);
-			if(b<0){
-				//number of pixels is over for even block size
-				xOffset = (int) Math.floor((double)sourceImage.getWidth()/(double)xBlockNumber);
-				xLastBlock = sourceImage.getWidth() - (xOffset * xBlockNumber);
-				
-			}
-			if(b>0){
-				//number of pixels is under block size
-				xOffset = (int)Math.ceil((double)sourceImage.getWidth()/(double)xBlockNumber);
-				xLastBlock = sourceImage.getWidth() - (xOffset * xBlockNumber);
-			}
-			
-		}
-		if (yLastBlock != 0){
-			double a = (double) sourceImage.getWidth()/ (double) yBlockNumber;
-			double b = a - (sourceImage.getWidth()/yBlockNumber + .5);
-			if(b<0){
-				//number of pixels is over for even block size
-				yOffset = (int) Math.floor((double)sourceImage.getWidth()/(double)yBlockNumber);
-				yLastBlock = sourceImage.getWidth() - (xOffset * yBlockNumber);
-				
-			}
-			if(b>0){
-				//number of pixels is under block size
-				yOffset = (int)Math.ceil((double)sourceImage.getWidth()/(double)yBlockNumber);
-				yLastBlock = sourceImage.getWidth() - (xOffset * yBlockNumber);
-			}
-			
+	public void makeMosaic(int xNumBlocks, int yNumBlocks){
+		if(xNumBlocks < 0 || xNumBlocks > sourceImage.getWidth() || yNumBlocks < 0 || yNumBlocks > sourceImage.getHeight()){
+			System.out.println("Invalid block Size. Bailing out");
+			return;
 		}
 		
-		ArrayList<Block> source= new ArrayList<Block>();
-		int[] rgb = new int[xOffset*yOffset];
-		for(int i=0; i<xBlockNumber; i++){
-			for(int j = 0; j<yBlockNumber; j++){
-				Block toAdd = new Block(i,j);
-				if(j == yBlockNumber - 1 && i == xBlockNumber - 1 ){
-					int[] rgbCorner = new int[xLastBlock*yLastBlock];
-					sourceImage.getRGB(i*xLastBlock, j*yLastBlock, xLastBlock, yLastBlock, rgbCorner, 0, xOffset);
-					//not sure if this will be thread safe
-					new Block(i,j).setAverageColor(new Color(rgbCorner[0],rgbCorner[1],rgbCorner[2]));
-					source.add(toAdd);
-					
-				}
-				else if(j == yBlockNumber - 1 ){
-					int[] rgbBottom = new int[xOffset*yLastBlock];
-					sourceImage.getRGB(i*xOffset, j*yLastBlock, xOffset, yLastBlock, rgbBottom, 0, xOffset); 
-					new Block(i,j).setAverageColor(new Color(rgbBottom[0],rgbBottom[1],rgbBottom[2]));
-					source.add(toAdd);
-				}
-				else if(i == xBlockNumber - 1 ){
-					int[] rgbSide = new int[xLastBlock*yOffset];
-					sourceImage.getRGB(i*xLastBlock, j*yOffset, xLastBlock, yOffset, rgbSide, 0, xOffset); 
-					new Block(i,j).setAverageColor(new Color(rgbSide[0],rgbSide[1],rgbSide[2]));
-					source.add(toAdd);
-				}
-				else{
-					sourceImage.getRGB(i*xOffset, j*yOffset, xOffset, yOffset, rgb, 0, xOffset); 
-					new Block(i,j).setAverageColor(new Color(rgb[0],rgb[1],rgb[2]));
-					source.add(toAdd);
+	}
+	
+	public ArrayList<Block> blockImage(BufferedImage img, int xNumBlocks, int yNumBlocks){
+		ArrayList<Block> imgBlocks = new ArrayList<Block>();
+		
+		this.xNumBlocks = xNumBlocks;
+		this.yNumBlocks = yNumBlocks;
+		
+		int blockWidth = img.getWidth() / xNumBlocks;
+		int blockHeight = img.getHeight() / yNumBlocks;
+		
+		for(int x=0; x < xNumBlocks; x++){
+			for(int y=0; y < yNumBlocks; y++){
+				int startX = x*blockWidth;
+				int startY = y*blockHeight;
+				int endX = Math.min((x+1)*blockWidth, img.getWidth());
+				int endY = Math.min((y+1)*blockHeight, img.getHeight());
+				
+				int width = (endX - startX);
+				int height = (endY - startY);
+				
+				if(width ==0 || height == 0 ){
+					continue;
 				}
 				
-			}
+				int[] pixels = new int[width*height];
+				img.getRGB(startX, startY, width, height, pixels, 0, width ); 
+				Color avgColor = getAverageColor(pixels);
+				Rectangle blockRect = new Rectangle(startX, startY, width, height);
+				imgBlocks.add(new Block(blockRect, avgColor));
 			
+			}
 		}
 		
-		
+		return imgBlocks;
 	}
 	
 	public static Color getAverageColor(int[] pixels){

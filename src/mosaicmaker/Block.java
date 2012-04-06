@@ -1,15 +1,20 @@
 package mosaicmaker;
 
 import java.awt.Color;
+import java.awt.Rectangle;
 
 public class Block {
 	protected Color averageColor;
-	private int row, col;
+	private Rectangle blockRect;
 	
-	public Block(int row , int col){
+	public Block(int x, int y, int width, int height, Color avgColor){
 		averageColor = new Color(0,0,0);
-		this.row = row;
-		this.col = col;
+		blockRect = new Rectangle(x,y,width,height);
+	}
+	
+	public Block(Rectangle rect, Color avgColor){
+		averageColor = avgColor;
+		blockRect = rect;
 	}
 	
 	public Color getAverageColor() {
@@ -19,20 +24,14 @@ public class Block {
 	public void setAverageColor(Color newAveragColor) {
 		this.averageColor = newAveragColor;
 	}
+
+	public Rectangle getBlockRect() {
+		return blockRect;
+	}
+
+	public void setBlockRect(Rectangle blockRect) {
+		this.blockRect = blockRect;
+	}
 	
-	public int getRow() {
-		return row;
-	}
 
-	public void setRow(int row) {
-		this.row = row;
-	}
-
-	public int getCol() {
-		return col;
-	}
-
-	public void setCol(int col) {
-		this.col = col;
-	}
 }

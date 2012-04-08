@@ -15,4 +15,4 @@ def getRects(imgSize, blockSize):
             print "New Block - Start: (" ,start_x , ",", start_y, ") width: ", width, " height: ", height
 
 
-getRects((100,100), (2,3))
+getRects((100,100), (5,5))

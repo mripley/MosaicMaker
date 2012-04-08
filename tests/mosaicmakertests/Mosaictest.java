@@ -58,12 +58,14 @@ public class Mosaictest {
 			MosaicMaker mm = new MosaicMaker("test_images/testImage.bmp", "./");
 			ArrayList<Block> blocks = mm.blockImage(testImage, 2, 3);
 			
-			assertEquals("Number of blocks not 4", blocks.size(), 6);
+			assertEquals("Number of blocks not 6", blocks.size(), 6);
 			
-			for(Block b : blocks){
-				System.out.println(b.getAverageColor());
-			}
-
+			assertEquals("Average Color of block 0 not matching", blocks.get(0).getAverageColor(), new Color(255,0,0));
+			assertEquals("Average Color of block 1 not matching", blocks.get(1).getAverageColor(), new Color(131,0,123));
+			assertEquals("Average Color of block 2 not matching", blocks.get(2).getAverageColor(), new Color(0,0,255));
+			assertEquals("Average Color of block 3 not matching", blocks.get(3).getAverageColor(), new Color(0,255,0));
+			assertEquals("Average Color of block 4 not matching", blocks.get(4).getAverageColor(), new Color(0,131,0));
+			assertEquals("Average Color of block 5 not matching", blocks.get(5).getAverageColor(), new Color(0,0,0));
 			
 		} catch (IOException e) {
 			System.out.println("Caught IO exception in MosaicMaker constructor");

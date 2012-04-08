@@ -14,16 +14,18 @@ public class MosaicMaker {
 	private BufferedImage sourceImage;
 	private int xNumBlocks, yNumBlocks;
 	private ImageFetcher fetcher;
+	private String replacementPath;
 	
 	public MosaicMaker(String sourceImagePath, String replacementPath) throws IOException{
 		sourceImage = ImageIO.read(new File(sourceImagePath));
-
+		this.replacementPath = replacementPath;
+		
 		File dir = new File(replacementPath);
 		if(dir.list() == null){
 			this.fetcher = new GoogleImageFetcher();
 		}
 		else{
-			this.fetcher = new DirectoryFetcher();
+			this.fetcher = new DirectoryFetcher(replacementPath);
 		}
 		
 	}

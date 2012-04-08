@@ -1,13 +1,14 @@
 package mosaicmaker;
 
+import java.awt.Color;
 import java.util.ArrayList;
 
 public class GoogleImageFetcher extends ImageFetcher {
 
 	@Override
-	public ArrayList<Block> getReplacementImages(String URI) {
+	public void loadReplacementImages(int xBlockSize, int yBlockSize) {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
 
 }

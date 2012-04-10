@@ -15,7 +15,7 @@ public abstract class ImageFetcher {
 	
 	public abstract void loadReplacementImages(int xBlockSize, int yBlockSize);
 	
-	public ReplacementBlock getBestReplacementBlock(Color color){
+	public ReplacementBlock getBestReplacementBlock(Color color, boolean duplicateImages){
 		ReplacementBlock retval = null; 
 		
 		double curMin = Double.MAX_VALUE;
@@ -29,6 +29,14 @@ public abstract class ImageFetcher {
 			}
 		}
 		
+		if(duplicateImages){
+			replacements.remove(retval);
+		}
+		
 		return retval;
+	}
+	
+	public int getNumReplacementImages(){
+		return replacements.size();
 	}
 }

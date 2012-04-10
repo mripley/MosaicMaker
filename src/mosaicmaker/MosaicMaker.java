@@ -12,13 +12,10 @@ import javax.imageio.ImageIO;
 public class MosaicMaker {
 	
 	private BufferedImage sourceImage;
-	private int xNumBlocks, yNumBlocks;
 	private ImageFetcher fetcher;
-	private String replacementPath;
 	
 	public MosaicMaker(String sourceImagePath, String replacementPath) throws IOException{
 		sourceImage = ImageIO.read(new File(sourceImagePath));
-		this.replacementPath = replacementPath;
 		
 		File dir = new File(replacementPath);
 		if(dir.list() == null){
@@ -30,10 +27,30 @@ public class MosaicMaker {
 		
 	}
 
-	public void makeMosaic(int xNumBlocks, int yNumBlocks){
+	public void makeMosaic(int xNumBlocks, int yNumBlocks) throws MosaicMakerException{
 		if(xNumBlocks < 0 || xNumBlocks > sourceImage.getWidth() || yNumBlocks < 0 || yNumBlocks > sourceImage.getHeight()){
-			System.out.println("Invalid block Size. Bailing out");
+			throw new MosaicMakerException("Invalid block size");
+		}
+		
+		// block the image and compute the average color for each block
+		ArrayList<Block> blocks = blockImage(sourceImage, xNumBlocks, yNumBlocks );
+		
+		// if there are no candidate blocks then there is nothing to do and just return. 
+		if(blocks.size()==0){
 			return;
+		}
+		
+		// if there is more than one replacement image then we can try to continue
+		// get the block width and height
+		int xBlockSize = blocks.get(0).getBlockRect().width;
+		int yBlockSize = blocks.get(0).getBlockRect().height;
+		
+		// go load the candidate images
+		fetcher.loadReplacementImages(xBlockSize, yBlockSize);
+		
+		// loop through all the blocks and find the best candidate image
+		for(Block b : blocks){
+			System.out.println("Working on block with average color: " + b.getAverageColor());
 		}
 		
 	}
@@ -41,28 +58,37 @@ public class MosaicMaker {
 	public ArrayList<Block> blockImage(BufferedImage img, int xNumBlocks, int yNumBlocks){
 		ArrayList<Block> imgBlocks = new ArrayList<Block>();
 		
-		this.xNumBlocks = xNumBlocks;
-		this.yNumBlocks = yNumBlocks;
-		
 		int blockWidth = img.getWidth() / xNumBlocks;
 		int blockHeight = img.getHeight() / yNumBlocks;
 		
 		for(int x=0; x < xNumBlocks; x++){
 			for(int y=0; y < yNumBlocks; y++){
+				// get the upper left coordinate of the blocks rectangle
 				int startX = x*blockWidth;
 				int startY = y*blockHeight;
+				
+				// compute the lower right coordinate of the blocks rectangle
+				// if we are at the edge choose the min size between the block width 
+				// the image width. This way at the edge we end with small blcoks 
+				// that fill out the rest of the image. 
 				int endX = Math.min((x+1)*blockWidth, img.getWidth());
 				int endY = Math.min((y+1)*blockHeight, img.getHeight());
 				
+				// get the width and height of this block
 				int width = (endX - startX);
 				int height = (endY - startY);
 				
+				// if the width of height is 0 then we would never see this block.
+				// jump to the next iteration of the loop.
 				if(width ==0 || height == 0 ){
 					continue;
 				}
 				
+				// allocate space for the block and extract the pixels 
 				int[] pixels = new int[width*height];
-				img.getRGB(startX, startY, width, height, pixels, 0, width ); 
+				img.getRGB(startX, startY, width, height, pixels, 0, width );
+				
+				// get the average color and add this new block to the list of blocks
 				Color avgColor = getAverageColor(pixels);
 				Rectangle blockRect = new Rectangle(startX, startY, width, height);
 				imgBlocks.add(new Block(blockRect, avgColor));

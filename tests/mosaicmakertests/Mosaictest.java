@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 
 import mosaicmaker.Block;
 import mosaicmaker.MosaicMaker;
+import mosaicmaker.MosaicMakerException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -30,6 +31,35 @@ public class Mosaictest {
 	public void tearDown() throws Exception {
 	}
 
+	@Test
+	public void testInvalidBlockSize(){
+		MosaicMaker mm = null;
+		try {
+			mm = new MosaicMaker("test_images/testImage.bmp", "./test_images/dir_test/");
+		
+
+		} catch (IOException e) {
+			System.out.println("Caught IO exception in Mosaic Maker constructor");
+			fail("Caught IO exception");
+		}
+
+		
+		try {
+			mm.makeMosaic(-4, -2);
+		}
+		catch (MosaicMakerException e) {
+			assertEquals("Wrong exception thrown", "Invalid block size", e.getMessage());
+		}
+		
+		try {
+			mm.makeMosaic(4000, 20000);
+		}
+		catch (MosaicMakerException e) {
+			assertEquals("Wrong exception thrown", "Invalid block size", e.getMessage());
+		}
+		
+	}
+	
 	@Test
 	public void testBlockingEven() {
 		

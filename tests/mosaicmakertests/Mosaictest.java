@@ -30,7 +30,24 @@ public class Mosaictest {
 	@After
 	public void tearDown() throws Exception {
 	}
-
+	@Test
+	public void testFullMosaicMaker(){
+		MosaicMaker maker;
+		try {
+			maker = new MosaicMaker("test_images/testImage.bmp","./test_images/dir_test/");
+			maker.makeMosaic(2,2, "result.png");
+		} catch (IOException e1) {
+			System.out.println("Constructor error, couldn't open directory or source image");
+			e1.printStackTrace();
+			fail("caught exception, failing");
+		} catch (MosaicMakerException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+			fail("caught exception, failing");
+		}
+		assertTrue(1==1);
+		
+	}
 	@Test
 	public void testInvalidBlockSize(){
 		MosaicMaker mm = null;

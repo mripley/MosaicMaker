@@ -45,14 +45,14 @@ public class Mosaictest {
 
 		
 		try {
-			mm.makeMosaic(-4, -2);
+			mm.makeMosaic(-4, -2, "output.png");
 		}
 		catch (MosaicMakerException e) {
 			assertEquals("Wrong exception thrown", "Invalid block size", e.getMessage());
 		}
 		
 		try {
-			mm.makeMosaic(4000, 20000);
+			mm.makeMosaic(4000, 20000, "output.png");
 		}
 		catch (MosaicMakerException e) {
 			assertEquals("Wrong exception thrown", "Invalid block size", e.getMessage());

@@ -30,14 +30,14 @@ public class Mosaictest {
 	@After
 	public void tearDown() throws Exception {
 	}
+	
 	@Test
 	public void testFullMosaicMaker(){
 		MosaicMaker maker;
 		try {
-			maker = new MosaicMaker("test_images/testImage.bmp","./test_images/dir_test/");
-			maker.makeMosaic(2,2, "result.png");
+			maker = new MosaicMaker("test_images/testImage2.jpg","./test_images/dir_test/");
+			maker.makeMosaic(200,100, "result.png");
 		} catch (IOException e1) {
-			System.out.println("Constructor error, couldn't open directory or source image");
 			e1.printStackTrace();
 			fail("caught exception, failing");
 		} catch (MosaicMakerException e) {
@@ -105,14 +105,17 @@ public class Mosaictest {
 			MosaicMaker mm = new MosaicMaker("test_images/testImage.bmp", "./");
 			ArrayList<Block> blocks = mm.blockImage(testImage, 2, 3);
 			
-			assertEquals("Number of blocks not 6", blocks.size(), 6);
+			assertEquals("Number of blocks not 8", blocks.size(), 8);
 			
 			assertEquals("Average Color of block 0 not matching", blocks.get(0).getAverageColor(), new Color(255,0,0));
 			assertEquals("Average Color of block 1 not matching", blocks.get(1).getAverageColor(), new Color(131,0,123));
 			assertEquals("Average Color of block 2 not matching", blocks.get(2).getAverageColor(), new Color(0,0,255));
-			assertEquals("Average Color of block 3 not matching", blocks.get(3).getAverageColor(), new Color(0,255,0));
-			assertEquals("Average Color of block 4 not matching", blocks.get(4).getAverageColor(), new Color(0,131,0));
-			assertEquals("Average Color of block 5 not matching", blocks.get(5).getAverageColor(), new Color(0,0,0));
+			assertEquals("Average Color of block 2 not matching", blocks.get(3).getAverageColor(), new Color(0,0,255));
+			
+			assertEquals("Average Color of block 3 not matching", blocks.get(4).getAverageColor(), new Color(0,255,0));
+			assertEquals("Average Color of block 4 not matching", blocks.get(5).getAverageColor(), new Color(0,131,0));
+			assertEquals("Average Color of block 5 not matching", blocks.get(6).getAverageColor(), new Color(0,0,0));
+			assertEquals("Average Color of block 5 not matching", blocks.get(7).getAverageColor(), new Color(0,0,0));
 			
 		} catch (IOException e) {
 			System.out.println("Caught IO exception in MosaicMaker constructor");

@@ -48,11 +48,16 @@ public class MosaicMaker {
 		
 		// go load the candidate images
 		fetcher.loadReplacementImages(xBlockSize, yBlockSize);
-		
+		int i = 0;
 		// loop through all the blocks and find the best candidate image
 		for(Block b : blocks){
-			System.out.println("Working on block with average color: " + b.getAverageColor());
+			i++;
+			System.out.println("Working on block with average color: " + b.getAverageColor()+ " block number: " + i +" Block rect = " + b.getBlockRect());
 			ReplacementBlock replacement = fetcher.getBestReplacementBlock(b.getAverageColor(), true);
+			
+			if(replacement == null){
+				throw new MosaicMakerException("Ran out of blocks. Bailing out");
+			}
 			
 			Rectangle rect = b.getBlockRect(); 
 			
@@ -74,8 +79,12 @@ public class MosaicMaker {
 		int blockWidth = img.getWidth() / xNumBlocks;
 		int blockHeight = img.getHeight() / yNumBlocks;
 		
-		for(int x=0; x < xNumBlocks; x++){
-			for(int y=0; y < yNumBlocks; y++){
+		int extraXBlocks = img.getWidth() % xNumBlocks;
+		int extraYBlocks = img.getHeight() % yNumBlocks;
+		
+		
+		for(int x=0; x < xNumBlocks+extraXBlocks; x++){
+			for(int y=0; y < yNumBlocks+extraYBlocks; y++){
 				// get the upper left coordinate of the blocks rectangle
 				int startX = x*blockWidth;
 				int startY = y*blockHeight;
@@ -93,7 +102,7 @@ public class MosaicMaker {
 				
 				// if the width of height is 0 then we would never see this block.
 				// jump to the next iteration of the loop.
-				if(width ==0 || height == 0 ){
+				if(width <= 0 || height <= 0 ){
 					continue;
 				}
 				

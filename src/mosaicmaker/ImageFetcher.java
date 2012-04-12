@@ -29,7 +29,7 @@ public abstract class ImageFetcher {
 			}
 		}
 		
-		if(duplicateImages){
+		if(!duplicateImages){
 			replacements.remove(retval);
 		}
 		

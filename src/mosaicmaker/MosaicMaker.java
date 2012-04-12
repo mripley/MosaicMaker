@@ -17,6 +17,7 @@ public class MosaicMaker {
 	public MosaicMaker(String sourceImagePath, String replacementPath) throws IOException{
 		sourceImage = ImageIO.read(new File(sourceImagePath));
 		
+		// get the correct type of fetcher depending on what we were given in the replacementPath
 		File dir = new File(replacementPath);
 		if(dir.list() == null){
 			this.fetcher = new GoogleImageFetcher();
@@ -27,7 +28,7 @@ public class MosaicMaker {
 		
 	}
 
-	public void makeMosaic(int xNumBlocks, int yNumBlocks) throws MosaicMakerException{
+	public void makeMosaic(int xNumBlocks, int yNumBlocks, String outputName) throws MosaicMakerException{
 		if(xNumBlocks < 0 || xNumBlocks > sourceImage.getWidth() || yNumBlocks < 0 || yNumBlocks > sourceImage.getHeight()){
 			throw new MosaicMakerException("Invalid block size");
 		}
@@ -51,7 +52,13 @@ public class MosaicMaker {
 		// loop through all the blocks and find the best candidate image
 		for(Block b : blocks){
 			System.out.println("Working on block with average color: " + b.getAverageColor());
+			ReplacementBlock replacement = fetcher.getBestReplacementBlock(b.getAverageColor(), true);
+			
+			Rectangle rect = b.getBlockRect(); 
+			
+			sourceImage.setRGB(rect.x, rect.y, rect.width, rect.height, replacement.getImg(), 0, rect.width);
 		}
+		//ImageIO.write(sourceImage, "png", outputName);
 		
 	}
 	

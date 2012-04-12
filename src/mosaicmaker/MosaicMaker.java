@@ -58,7 +58,13 @@ public class MosaicMaker {
 			
 			sourceImage.setRGB(rect.x, rect.y, rect.width, rect.height, replacement.getImg(), 0, rect.width);
 		}
-		//ImageIO.write(sourceImage, "png", outputName);
+		
+		
+		try {
+			ImageIO.write(sourceImage, "png", new File(outputName));
+		} catch (IOException e) {
+			System.out.println("Caught IO exception when writing output file");
+		}
 		
 	}
 	

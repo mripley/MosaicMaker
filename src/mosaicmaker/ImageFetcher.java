@@ -7,6 +7,7 @@ public abstract class ImageFetcher {
 	
 	protected ArrayList<ReplacementBlock> replacements;
 	
+	// get the distance between 2 colors 
 	private double getDist(Color c1, Color c2){
 		return Math.sqrt(Math.pow((c1.getRed()-c2.getRed()),2) + 
 								Math.pow((c1.getBlue()-c2.getBlue()), 2) + 

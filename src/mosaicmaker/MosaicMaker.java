@@ -51,37 +51,45 @@ public class MosaicMaker {
 		int i = 0;
 		// loop through all the blocks and find the best candidate image
 		for(Block b : blocks){
-			i++;
-			System.out.println("Working on block with average color: " + b.getAverageColor()+ " block number: " + i +" Block rect = " + b.getBlockRect());
+			//System.out.println("Working on block with average color: " + b.getAverageColor()+ " block number: " + i +" Block rect = " + b.getBlockRect());
 			ReplacementBlock replacement = fetcher.getBestReplacementBlock(b.getAverageColor(), true);
 			
+			// make sure we got a replacement block. If we ran out of replacement blocks or didn't find one 
+			// we should stop
 			if(replacement == null){
 				throw new MosaicMakerException("Ran out of blocks. Bailing out");
 			}
 			
+			// get the rectangle that we are currently replacing 
 			Rectangle rect = b.getBlockRect(); 
-			
 			sourceImage.setRGB(rect.x, rect.y, rect.width, rect.height, replacement.getImg(), 0, rect.width);
 		}
 		
-		
-		try {
-			ImageIO.write(sourceImage, "png", new File(outputName));
-		} catch (IOException e) {
-			System.out.println("Caught IO exception when writing output file");
+		// get the file extension 
+		int pos = outputName.lastIndexOf(".");
+		String extension = ""; 
+		if(pos > 0){
+			extension = outputName.substring(pos+1);
 		}
 		
+		try {
+			ImageIO.write(sourceImage, extension, new File(outputName));
+		} catch (IOException e) {
+			System.out.println("Caught IO exception when writing output file");
+		}	
 	}
 	
 	public ArrayList<Block> blockImage(BufferedImage img, int xNumBlocks, int yNumBlocks){
 		ArrayList<Block> imgBlocks = new ArrayList<Block>();
 		
+		// get the number of blocks in this image 
 		int blockWidth = img.getWidth() / xNumBlocks;
 		int blockHeight = img.getHeight() / yNumBlocks;
 		
+		// if we have a image that doesn't fit well with the current blocks
+		// then compute the total number of extra blocks needed to fill out the image. 
 		int extraXBlocks = img.getWidth() % xNumBlocks;
 		int extraYBlocks = img.getHeight() % yNumBlocks;
-		
 		
 		for(int x=0; x < xNumBlocks+extraXBlocks; x++){
 			for(int y=0; y < yNumBlocks+extraYBlocks; y++){

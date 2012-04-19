@@ -23,6 +23,7 @@ public class DirectoryFetcher extends ImageFetcher {
 	
 	@Override
 	public void loadReplacementImages(int blockWidth, int blockHeight) {
+		
 		// loop through all the files in the directory and load them as required 
 		for(File fileName : directory.listFiles()){
 			try {
@@ -38,6 +39,7 @@ public class DirectoryFetcher extends ImageFetcher {
 			} catch (IOException e) {
 				System.out.println("Caught IO exception while loading image " + fileName);
 			}
+			
 		}
 		
 	}

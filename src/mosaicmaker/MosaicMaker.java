@@ -15,6 +15,7 @@ public class MosaicMaker {
 	private ImageFetcher fetcher;
 	
 	public MosaicMaker(String sourceImagePath, String replacementPath) throws IOException{
+		
 		sourceImage = ImageIO.read(new File(sourceImagePath));
 		
 		// get the correct type of fetcher depending on what we were given in the replacementPath
@@ -29,6 +30,7 @@ public class MosaicMaker {
 	}
 
 	public void makeMosaic(int xNumBlocks, int yNumBlocks, String outputName) throws MosaicMakerException{
+		long startTime = System.currentTimeMillis();
 		if(xNumBlocks < 0 || xNumBlocks > sourceImage.getWidth() || yNumBlocks < 0 || yNumBlocks > sourceImage.getHeight()){
 			throw new MosaicMakerException("Invalid block size");
 		}
@@ -47,9 +49,13 @@ public class MosaicMaker {
 		int yBlockSize = blocks.get(0).getBlockRect().height;
 		
 		// go load the candidate images
+		long startLoadCandidate = System.currentTimeMillis();
 		fetcher.loadReplacementImages(xBlockSize, yBlockSize);
+		long stopLoadCandidate = System.currentTimeMillis();
+		
 		int i = 0;
 		// loop through all the blocks and find the best candidate image
+		long startFindReplacements = System.currentTimeMillis();
 		for(Block b : blocks){
 			//System.out.println("Working on block with average color: " + b.getAverageColor()+ " block number: " + i +" Block rect = " + b.getBlockRect());
 			ReplacementBlock replacement = fetcher.getBestReplacementBlock(b.getAverageColor(), true);
@@ -64,6 +70,7 @@ public class MosaicMaker {
 			Rectangle rect = b.getBlockRect(); 
 			sourceImage.setRGB(rect.x, rect.y, rect.width, rect.height, replacement.getImg(), 0, rect.width);
 		}
+		long stopFindReplacements = System.currentTimeMillis();
 		
 		// get the file extension 
 		int pos = outputName.lastIndexOf(".");
@@ -76,7 +83,11 @@ public class MosaicMaker {
 			ImageIO.write(sourceImage, extension, new File(outputName));
 		} catch (IOException e) {
 			System.out.println("Caught IO exception when writing output file");
-		}	
+		}
+		long stopTime = System.currentTimeMillis();
+		System.out.println("total time to create mosaic with sequential processing: " + String.valueOf(stopTime - startTime));
+		System.out.println("total time to load candidate images with sequential processing: " + String.valueOf(stopLoadCandidate - startLoadCandidate));
+		System.out.println("total time to find replacement images with sequential processing: " + String.valueOf(stopFindReplacements - startFindReplacements));
 	}
 	
 	public ArrayList<Block> blockImage(BufferedImage img, int xNumBlocks, int yNumBlocks){

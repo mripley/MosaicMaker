@@ -21,7 +21,7 @@ public class MosaicMaker {
 		// get the correct type of fetcher depending on what we were given in the replacementPath
 		File dir = new File(replacementPath);
 		if(dir.list() == null){
-			this.fetcher = new GoogleImageFetcher();
+			this.fetcher = new GoogleImageFetcher(replacementPath);
 		}
 		else{
 			this.fetcher = new DirectoryFetcher(replacementPath);

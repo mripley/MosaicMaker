@@ -32,7 +32,7 @@ public class BingImageFetcherTests {
 	public void testBingMakeMosaic (){
 		MosaicMaker maker;
 		try {
-			maker = new MosaicMaker("test_images/testImage2.jpg", "test_images/terms.txt");
+			maker = new MosaicMaker("IMAG0719.jpg", "test_images/terms.txt");
 			maker.makeMosaic(40,30,"result.png");
 		} catch (IOException e) {
 			System.out.println("caught io exception in constructor of MosaicMaker");

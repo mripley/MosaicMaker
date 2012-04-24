@@ -19,6 +19,13 @@ public class BingImageFetcherTests {
 	}
 	
 	@Test
+	public void testBingResults(){
+		BingImageFetcher fetcher = new BingImageFetcher("test_images/terms.txt");
+		fetcher.loadReplacementImages(40, 30);
+		System.out.println(fetcher.getNumReplacementImages());
+	}
+	
+	@Test
 	public void testBingMakeMosaic (){
 		MosaicMaker maker;
 		try {
@@ -29,7 +36,7 @@ public class BingImageFetcherTests {
 		}catch (MosaicMakerException e) {
 			System.out.println(e.getMessage());
 		}
-		
+		assertTrue(1==1);
 	}
 
 }

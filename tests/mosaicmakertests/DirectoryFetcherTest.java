@@ -21,7 +21,7 @@ public class DirectoryFetcherTest {
 	@Test
 	public void testDirectoryLoad() {
 		dir.loadReplacementImages(200, 200);
-		assertTrue(dir.getNumReplacementImages() == 8);
+		assertTrue(dir.getNumReplacementImages() == 132);
 		
 		ReplacementBlock block = dir.getBestReplacementBlock(new Color(255,255,255), false);
 		assertEquals("Average color not equal for test image 0", block.getAverageColor(), new Color(247,246,246));

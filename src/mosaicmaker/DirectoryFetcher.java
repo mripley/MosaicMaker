@@ -27,14 +27,8 @@ public class DirectoryFetcher extends ImageFetcher {
 		// loop through all the files in the directory and load them as required 
 		for(File fileName : directory.listFiles()){
 			try {
-				BufferedImage img = Scalr.resize(ImageIO.read(fileName), Scalr.Method.SPEED, Scalr.Mode.FIT_EXACT,
-			               blockWidth, blockHeight, Scalr.OP_ANTIALIAS);
-				
-				int[] pixels = new int[blockWidth*blockHeight];
-				img.getRGB(0, 0, blockWidth, blockHeight, pixels, 0, blockWidth);
-				ReplacementBlock newBlock = new ReplacementBlock(pixels);
-				newBlock.setAverageColor(MosaicMaker.getAverageColor(pixels));
-				replacements.add(newBlock);
+				BufferedImage img = loadAndScaleImage(fileName, blockWidth, blockHeight); 
+				replacements.add(this.buildReplacement(img));
 	
 			} catch (IOException e) {
 				System.out.println("Caught IO exception while loading image " + fileName);

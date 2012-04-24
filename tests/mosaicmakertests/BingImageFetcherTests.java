@@ -23,6 +23,9 @@ public class BingImageFetcherTests {
 		BingImageFetcher fetcher = new BingImageFetcher("test_images/terms.txt");
 		fetcher.loadReplacementImages(40, 30);
 		System.out.println(fetcher.getNumReplacementImages());
+		
+		// passing means that we got at least 66% of the images we wanted
+		assertTrue(fetcher.getNumReplacementImages() > 60);
 	}
 	
 	@Test

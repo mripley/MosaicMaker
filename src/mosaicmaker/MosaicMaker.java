@@ -142,8 +142,6 @@ public class MosaicMaker {
 						return resizeSourceImageBlock(new Rectangle(startX, startY, width, height));
 					}
 				});
-				
-			
 			}
 		}
 		try {
@@ -153,15 +151,17 @@ public class MosaicMaker {
 				 
 			}
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Cuaght interrupted exception");
 		}
 		catch (ExecutionException e) {
-			// TODO Auto-generated catch block
+			System.out.println("Caught execution exception");
 			e.printStackTrace();
 		}
+		
+		threadPool.shutdown();
 		return imgBlocks;
 	}
+	
 	private Block resizeSourceImageBlock(Rectangle rect){
 		// allocate space for the block and extract the pixels 
 		int[] pixels = new int[rect.width*rect.height];

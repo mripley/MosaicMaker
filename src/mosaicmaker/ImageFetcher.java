@@ -63,7 +63,7 @@ public abstract class ImageFetcher {
 	
 	protected ReplacementBlock buildReplacement(BufferedImage scaledImage){
 		int width = scaledImage.getWidth();
-		int height = scaledImage.getWidth();
+		int height = scaledImage.getHeight();
 		int[] pixels = new int[width * height];
 		scaledImage.getRGB(0, 0, width, height, pixels, 0, width);
 		ReplacementBlock newBlock = new ReplacementBlock(pixels);

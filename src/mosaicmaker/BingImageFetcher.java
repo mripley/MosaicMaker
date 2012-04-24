@@ -70,11 +70,12 @@ public class BingImageFetcher extends ImageFetcher {
 			builder.withQuery(terms.get(i));
 			builder.withImageRequestOffset((long) (i * resultsPerPage));
 			SearchResponse response = client.search(builder.getResult());
+			this. replacements = new ArrayList<ReplacementBlock> (response.getImage().getResults().size());
 			
 			for (ImageResult result : response.getImage().getResults()) {
 				if(result != null){
 					try {
-						BufferedImage img = this.loadAndScaleImage(result.getMediaUrl(), xBlockSize, yBlockSize);
+						BufferedImage img = this.loadAndScaleImage(result.getMediaUrl(), xBlockSize, yBlockSize);				
 						replacements.add(this.buildReplacement(img));
 					} catch (IOException e) {
 						

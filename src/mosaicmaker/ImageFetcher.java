@@ -62,6 +62,9 @@ public abstract class ImageFetcher {
 	} 
 	
 	protected ReplacementBlock buildReplacement(BufferedImage scaledImage){
+		if(scaledImage == null){
+			return null;
+		}
 		int width = scaledImage.getWidth();
 		int height = scaledImage.getHeight();
 		int[] pixels = new int[width * height];

@@ -6,6 +6,12 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import com.google.code.bing.search.client.BingSearchClient;
 import com.google.code.bing.search.client.BingSearchServiceClientFactory;
@@ -72,31 +78,58 @@ public class BingImageFetcher extends ImageFetcher {
 	}
 	
 	@Override
-	public void loadReplacementImages(int xBlockSize, int yBlockSize) {
-		
+	public void loadReplacementImages(final int xBlockSize, final int yBlockSize) {
+
 		replacements = new ArrayList<ReplacementBlock>((int) (terms.size() * resultsPerPage) );
-		
+		ExecutorService threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
+		ArrayList<Callable<ReplacementBlock>> replacementTasks = new ArrayList<Callable<ReplacementBlock>>();
+
 		for(int i=0; i<terms.size(); i++){
 			builder.withQuery(terms.get(i));
 			builder.withImageRequestOffset((long) (i * resultsPerPage));
 			SearchResponse response = client.search(builder.getResult());
-		
-			for (ImageResult result : response.getImage().getResults()) {
+
+			for (final ImageResult result : response.getImage().getResults()) {
 				if(result != null){
-					try {
-						BufferedImage img = this.loadAndScaleImage(result.getMediaUrl(), xBlockSize, yBlockSize);				
-						replacements.add(this.buildReplacement(img));
-					} catch (IOException e) {
+					replacementTasks.add( new Callable<ReplacementBlock>(){
 						
-						System.out.println("Caught io exception in loadReplacementImages: " +  e.getMessage());
-					}
+						@Override
+						public ReplacementBlock call() throws Exception {
+							BufferedImage img = null;
+							try {
+								 img = loadAndScaleImage(result.getMediaUrl(), xBlockSize, yBlockSize);				
+								
+							} catch (IOException e) {
+								System.out.println("Caught io exception in loadReplacementImages: " +  e.getMessage());
+							}
+							return buildReplacement(img);
+						} 
+					});
 				}
+
 				else{
 					System.out.println("Error fetching page: "+i);
-				}        
-			}	
+				} 
+			}
+
+
 		}
+		try {
+			List<Future<ReplacementBlock>> blocks = threadPool.invokeAll(replacementTasks);
+			for(Future<ReplacementBlock> b : blocks){
+				if(b.get() != null){
+					replacements.add(b.get());
+				}
+			}
+		} catch (InterruptedException e) {
+			System.out.println("Caught interrupted exception when copying futures to blocks: " +  e.getMessage());
+		} catch (ExecutionException e) {
+			System.out.println("Caught execution exception when copying futures to blocks: " +  e.getMessage());
+		}		
+		
 	}
+
 	
 	public ArrayList<String> getTerms() {
 		return terms;

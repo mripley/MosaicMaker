@@ -26,7 +26,8 @@ public class BingImageFetcherTests {
 		
 		// passing means that we got at least 66% of the images we wanted
 		assertTrue(fetcher.getNumReplacementImages() > 60);
-	}
+		System.out.println("number of repalcement images: " + fetcher.getNumReplacementImages());
+	}	
 	
 	@Test
 	public void testBingMakeMosaic (){

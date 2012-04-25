@@ -2,7 +2,6 @@ package mosaicmaker;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImagingOpException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -62,6 +61,9 @@ public abstract class ImageFetcher {
 	} 
 	
 	protected ReplacementBlock buildReplacement(BufferedImage scaledImage){
+		if(scaledImage == null){
+			return null;
+		}
 		int width = scaledImage.getWidth();
 		int height = scaledImage.getHeight();
 		int[] pixels = new int[width * height];

@@ -54,24 +54,33 @@ public abstract class ImageFetcher {
 		return replacements.size();
 	}
 	
+	
+	// load and scale an image from a file. 
 	protected BufferedImage loadAndScaleImage(File filename, int blockWidth, int blockHeight) throws IOException{
 		return Scalr.resize(ImageIO.read(filename), Scalr.Method.SPEED, Scalr.Mode.FIT_EXACT,
 	               blockWidth, blockHeight, Scalr.OP_ANTIALIAS);
 	} 
 	
-	
+	// load and scale an image from a URL. the ImageIO class takes care of all the HTTP stuff. 
 	protected BufferedImage loadAndScaleImage(String url, int blockWidth, int blockHeight) throws IOException{
 		return Scalr.resize(ImageIO.read(new URL(url)), Scalr.Method.SPEED, Scalr.Mode.FIT_EXACT,
 	               blockWidth, blockHeight, Scalr.OP_ANTIALIAS);
 	} 
 	
+	// build a replacement blockk from a buffered image. 
 	protected ReplacementBlock buildReplacement(BufferedImage scaledImage){
 		if(scaledImage == null){
 			return null;
 		}
+		
+		// grab the width and height of the incoming image. 
 		int width = scaledImage.getWidth();
 		int height = scaledImage.getHeight();
+		
+		// allocate enough space to hold the incoming pixels
 		int[] pixels = new int[width * height];
+		
+		// copy the pixels out to the arrya. 
 		scaledImage.getRGB(0, 0, width, height, pixels, 0, width);
 		ReplacementBlock newBlock = new ReplacementBlock(pixels);
 		newBlock.setAverageColor(MosaicMaker.getAverageColor(pixels));

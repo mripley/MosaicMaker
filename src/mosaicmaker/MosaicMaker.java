@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -60,6 +59,7 @@ public class MosaicMaker {
 		long startLoadCandidate = System.currentTimeMillis();
 		fetcher.loadReplacementImages(xBlockSize, yBlockSize);
 		long stopLoadCandidate = System.currentTimeMillis();
+		System.out.println("total time to load candidate images with parallel processing: " + String.valueOf(stopLoadCandidate - startLoadCandidate));
 		
 		// loop through all the blocks and find the best candidate image
 		long startFindReplacements = System.currentTimeMillis();
@@ -78,6 +78,7 @@ public class MosaicMaker {
 			sourceImage.setRGB(rect.x, rect.y, rect.width, rect.height, replacement.getImg(), 0, rect.width);
 		}
 		long stopFindReplacements = System.currentTimeMillis();
+		System.out.println("total time to find replacement images with sequential processing: " + String.valueOf(stopFindReplacements - startFindReplacements));
 		
 		String extension = getExtension(outputName);
 		
@@ -88,8 +89,8 @@ public class MosaicMaker {
 		}
 		long stopTime = System.currentTimeMillis();
 		System.out.println("total time to create mosaic with parallel processing: " + String.valueOf(stopTime - startTime));
-		System.out.println("total time to load candidate images with parallel processing: " + String.valueOf(stopLoadCandidate - startLoadCandidate));
-		System.out.println("total time to find replacement images with sequential processing: " + String.valueOf(stopFindReplacements - startFindReplacements));
+
+		
 	}
 	
 	public ArrayList<Block> blockImage(BufferedImage img, int xNumBlocks, int yNumBlocks){

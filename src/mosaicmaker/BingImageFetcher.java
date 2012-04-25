@@ -38,6 +38,7 @@ public class BingImageFetcher extends ImageFetcher {
 		initBing();
 	}
 	
+	// load the list of terms from a file.
 	private ArrayList<String> getWordList(String filePath){
 		ArrayList<String> words = new ArrayList<String>();
 		
@@ -57,6 +58,7 @@ public class BingImageFetcher extends ImageFetcher {
 		return words;
 	}
 	
+	// init bing and setup all image searching parameter. 
 	private void initBing(){
 
 		factory = BingSearchServiceClientFactory.newInstance();
@@ -77,6 +79,7 @@ public class BingImageFetcher extends ImageFetcher {
 		
 	}
 	
+	// Loads teh replacement images from the links returned by bing. 
 	@Override
 	public void loadReplacementImages(final int xBlockSize, final int yBlockSize) {
 
@@ -85,11 +88,17 @@ public class BingImageFetcher extends ImageFetcher {
 
 		ArrayList<Callable<ReplacementBlock>> replacementTasks = new ArrayList<Callable<ReplacementBlock>>();
 
+		// loop through all the terms 
 		for(int i=0; i<terms.size(); i++){
 			builder.withQuery(terms.get(i));
-			builder.withImageRequestOffset((long) (i * resultsPerPage));
+			
+			// adjust this if we decide to get more than one page of results 
+			builder.withImageRequestOffset(0L);
+			
+			// execute the query
 			SearchResponse response = client.search(builder.getResult());
 
+			// loop through all all the responses
 			for (final ImageResult result : response.getImage().getResults()) {
 				if(result != null){
 					replacementTasks.add( new Callable<ReplacementBlock>(){
@@ -101,6 +110,7 @@ public class BingImageFetcher extends ImageFetcher {
 								
 								String url = result.getMediaUrl();
 								if(url != null){
+									// load and scale the image from the url
 									img = loadAndScaleImage(result.getMediaUrl(), xBlockSize, yBlockSize);	
 								}	
 							} catch (IOException e) {

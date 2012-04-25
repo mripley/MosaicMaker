@@ -61,7 +61,6 @@ public class MosaicMaker {
 		fetcher.loadReplacementImages(xBlockSize, yBlockSize);
 		long stopLoadCandidate = System.currentTimeMillis();
 		
-		int i = 0;
 		// loop through all the blocks and find the best candidate image
 		long startFindReplacements = System.currentTimeMillis();
 		for(Block b : blocks){

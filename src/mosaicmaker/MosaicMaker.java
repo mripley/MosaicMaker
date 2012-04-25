@@ -79,12 +79,7 @@ public class MosaicMaker {
 		}
 		long stopFindReplacements = System.currentTimeMillis();
 		
-		// get the file extension 
-		int pos = outputName.lastIndexOf(".");
-		String extension = ""; 
-		if(pos > 0){
-			extension = outputName.substring(pos+1);
-		}
+		String extension = getExtension(outputName);
 		
 		try {
 			ImageIO.write(sourceImage, extension, new File(outputName));
@@ -92,8 +87,8 @@ public class MosaicMaker {
 			System.out.println("Caught IO exception when writing output file");
 		}
 		long stopTime = System.currentTimeMillis();
-		System.out.println("total time to create mosaic with sequential processing: " + String.valueOf(stopTime - startTime));
-		System.out.println("total time to load candidate images with sequential processing: " + String.valueOf(stopLoadCandidate - startLoadCandidate));
+		System.out.println("total time to create mosaic with parallel processing: " + String.valueOf(stopTime - startTime));
+		System.out.println("total time to load candidate images with parallel processing: " + String.valueOf(stopLoadCandidate - startLoadCandidate));
 		System.out.println("total time to find replacement images with sequential processing: " + String.valueOf(stopFindReplacements - startFindReplacements));
 	}
 	
@@ -188,4 +183,17 @@ public class MosaicMaker {
 		b /= pixels.length;
 		return new Color(r,g,b);	
 	}
+	
+	
+	private String getExtension(String fileName){
+		// get the file extension 
+		int pos = fileName.lastIndexOf(".");
+		String extension = ""; 
+		if(pos > 0){
+			extension = fileName.substring(pos+1);
+		}
+		return extension;
+	}
 }
+
+

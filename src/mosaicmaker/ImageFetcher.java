@@ -2,7 +2,6 @@ package mosaicmaker;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImagingOpException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;

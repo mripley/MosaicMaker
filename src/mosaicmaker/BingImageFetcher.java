@@ -98,8 +98,11 @@ public class BingImageFetcher extends ImageFetcher {
 						public ReplacementBlock call() throws Exception {
 							BufferedImage img = null;
 							try {
-								 img = loadAndScaleImage(result.getMediaUrl(), xBlockSize, yBlockSize);				
 								
+								String url = result.getMediaUrl();
+								if(url != null){
+									img = loadAndScaleImage(result.getMediaUrl(), xBlockSize, yBlockSize);	
+								}	
 							} catch (IOException e) {
 								System.out.println("Caught io exception in loadReplacementImages: " +  e.getMessage());
 							}

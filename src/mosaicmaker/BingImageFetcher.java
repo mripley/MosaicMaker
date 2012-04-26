@@ -73,7 +73,6 @@ public class BingImageFetcher extends ImageFetcher {
 		builder.withSearchOption(SearchOption.ENABLE_HIGHLIGHTING);
 
 		builder.withImageRequestCount(resultsPerPage);
-
 		builder.withWebRequestSearchOption(WebSearchOption.DISABLE_HOST_COLLAPSING);
 		builder.withWebRequestSearchOption(WebSearchOption.DISABLE_QUERY_ALTERATIONS);
 		
@@ -97,9 +96,14 @@ public class BingImageFetcher extends ImageFetcher {
 			
 			// execute the query
 			SearchResponse response = client.search(builder.getResult());
-
 			// loop through all all the responses
 			for (final ImageResult result : response.getImage().getResults()) {
+				
+				if(result.getFileSize() > 2500000){
+					System.out.println("skipping image due to size" + result.getFileSize());
+					continue;
+				}
+				
 				if(result != null){
 					replacementTasks.add( new Callable<ReplacementBlock>(){
 						

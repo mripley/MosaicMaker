@@ -125,12 +125,7 @@ public class BingImageFetcher extends ImageFetcher {
 					});
 				}
 
-				else{
-					System.out.println("Error fetching page: "+i);
-				} 
 			}
-
-
 		}
 		try {
 			List<Future<ReplacementBlock>> blocks = threadPool.invokeAll(replacementTasks);

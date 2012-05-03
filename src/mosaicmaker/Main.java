@@ -28,8 +28,8 @@ public class Main {
 		}catch (MosaicMakerException e) {
 			System.out.println(e.getMessage());
 		}
-		
-		
+		System.out.println("Exiting");
+		return;
 	}
 
 }

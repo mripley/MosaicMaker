@@ -55,12 +55,12 @@ public class DirectoryFetcher extends ImageFetcher {
 				replacements.add(b.get());
 			}
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Caught interrupted exception in loadReplacementImages");
 		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Caught execution exception in loadReplacementImages");
 		}		
+		
+		threadPool.shutdown();
 	}
 	
 }

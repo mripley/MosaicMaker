@@ -34,7 +34,6 @@ public class BingImageFetcher extends ImageFetcher {
 	
 	public BingImageFetcher(String filePath){
 		terms = getWordList(filePath);
-		
 		initBing();
 	}
 	
@@ -78,7 +77,7 @@ public class BingImageFetcher extends ImageFetcher {
 		
 	}
 	
-	// Loads teh replacement images from the links returned by bing. 
+	// Loads the replacement images from the links returned by bing. 
 	@Override
 	public void loadReplacementImages(final int xBlockSize, final int yBlockSize) {
 
@@ -138,7 +137,7 @@ public class BingImageFetcher extends ImageFetcher {
 		} catch (ExecutionException e) {
 			System.out.println("Caught execution exception when copying futures to blocks: " +  e.getMessage());
 		}		
-		
+		threadPool.shutdown();
 	}
 
 	

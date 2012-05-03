@@ -99,7 +99,7 @@ public class BingImageFetcher extends ImageFetcher {
 			for (final ImageResult result : response.getImage().getResults()) {
 				
 				if(result.getFileSize() > 2500000){
-					System.out.println("skipping image due to size" + result.getFileSize());
+					System.out.println("skipping image due to size " + result.getFileSize());
 					continue;
 				}
 				

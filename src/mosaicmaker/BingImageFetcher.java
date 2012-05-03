@@ -107,24 +107,23 @@ public class BingImageFetcher extends ImageFetcher {
 				if(result != null){
 					replacementTasks.add( new Callable<ReplacementBlock>(){
 						
-						@Override
-						public ReplacementBlock call() throws Exception {
-							BufferedImage img = null;
-							try {
-								
-								String url = result.getMediaUrl();
-								if(url != null){
-									// load and scale the image from the url
-									img = loadAndScaleImage(result.getMediaUrl(), xBlockSize, yBlockSize);	
-								}	
-							} catch (IOException e) {
-								System.out.println("Caught io exception in loadReplacementImages: " +  e.getMessage());
-							}
-							return buildReplacement(img);
-						} 
-					});
+					@Override
+					public ReplacementBlock call() throws Exception {
+						BufferedImage img = null;
+						try {
+							
+							String url = result.getMediaUrl();
+							if(url != null){
+								// load and scale the image from the url
+								img = loadAndScaleImage(result.getMediaUrl(), xBlockSize, yBlockSize);	
+							}	
+						} catch (IOException e) {
+							System.out.println("Caught io exception in loadReplacementImages: " +  e.getMessage());
+						}
+						return buildReplacement(img);
+					} 
+				});
 				}
-
 			}
 		}
 		try {
